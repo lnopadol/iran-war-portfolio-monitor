@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iran War Portfolio Monitor | Lost Decade V2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { 
+  scroll-behavior: smooth; 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+body {
+  background: #0a0a0f;
+  color: #c8c8d0;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ========== DESIGN TOKENS ========== */
+:root {
+  --bg: #0a0a0f;
+  --card: #15151f;
+  --card-hover: #1a1a28;
+  --border: #2a2a3a;
+  --border-subtle: #1e1e2e;
+  --gold: #d4a84b;
+  --teal: #2dd4bf;
+  --green: #22c55e;
+  --red: #ef4444;
+  --amber: #f59e0b;
+  --grey: #6b7280;
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898a8;
+  --text-muted: #68687a;
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: 180ms var(--ease);
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+
+/* ========== UTILITY ========== */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+@media (min-width: 768px) {
+  .container { padding: 0 24px; }
+}
+@media (min-width: 1024px) {
+  .container { padding: 0 32px; }
+}
+
+/* ========== HEADER ========== */
+.header {
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10, 10, 15, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.header-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+@media (min-width: 768px) {
+  .header-inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.header-title {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 2.5vw, 1.375rem);
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.08em;
+}
+.header-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.header-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.badge-conflict {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--red);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.06em;
+}
+.badge-conflict::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ========== SECTION TITLES ========== */
+.section {
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.section:last-of-type {
+  border-bottom: none;
+}
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.section-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+/* ========== CONFLICT STATUS BAR ========== */
+.status-bar {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .status-bar { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1024px) {
+  .status-bar { grid-template-columns: repeat(6, 1fr); }
+}
+.status-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  transition: background var(--transition);
+}
+.status-item:hover {
+  background: var(--card-hover);
+}
+.status-item-label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.status-item-value {
+  font-family: var(--font-mono);
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.status-item-change {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  margin-top: 2px;
+}
+.status-item-change.up { color: var(--green); }
+.status-item-change.down { color: var(--red); }
+.status-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+}
+.status-badge.red {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--red);
+}
+.status-badge.orange {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: var(--amber);
+}
+
+/* ========== HEATMAP GRID ========== */
+.heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+.legend-dot.green { background: var(--green); }
+.legend-dot.red { background: var(--red); }
+.legend-dot.amber { background: var(--amber); }
+.legend-dot.grey { background: var(--grey); }
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+@media (min-width: 640px) {
+  .heatmap-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .heatmap-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1280px) {
+  .heatmap-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.heatmap-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 14px 14px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: background var(--transition), transform var(--transition);
+}
+.heatmap-card:hover {
+  background: var(--card-hover);
+}
+.heatmap-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+.heatmap-card.impact-green::before { background: var(--green); }
+.heatmap-card.impact-red::before { background: var(--red); }
+.heatmap-card.impact-amber::before { background: var(--amber); }
+.heatmap-card.impact-grey::before { background: var(--grey); }
+
+.heatmap-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+.heatmap-card-name {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.heatmap-card-weight {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.heatmap-card-ticker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.heatmap-card-assessment {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ========== SLEEVE ANALYSIS TABLE ========== */
+.sleeve-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+@media (min-width: 768px) {
+  .sleeve-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .sleeve-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.sleeve-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: background var(--transition);
+}
+.sleeve-card:hover {
+  background: var(--card-hover);
+}
+.sleeve-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+.sleeve-card-name {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.sleeve-card-weight {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+.sleeve-card-impact {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin-bottom: 10px;
+}
+.sleeve-card-impact.positive {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--green);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+.sleeve-card-impact.mixed {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.sleeve-card-impact.negative {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.sleeve-card-impact.at-risk {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.sleeve-card-impact.insulated {
+  background: rgba(107, 114, 128, 0.12);
+  color: var(--grey);
+  border: 1px solid rgba(107, 114, 128, 0.25);
+}
+.sleeve-card-desc {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* ========== SCENARIO CARDS ========== */
+.scenario-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.scenario-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: background var(--transition);
+}
+.scenario-card:hover {
+  background: var(--card-hover);
+}
+.scenario-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  min-height: 52px;
+}
+.scenario-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.scenario-number {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 20px;
+}
+.scenario-title {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.scenario-prob {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+.scenario-chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform var(--transition);
+  margin-left: 12px;
+}
+.scenario-card.open .scenario-chevron {
+  transform: rotate(180deg);
+}
+.scenario-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 300ms var(--ease);
+}
+.scenario-card.open .scenario-body {
+  max-height: 500px;
+}
+.scenario-content {
+  padding: 0 16px 16px 48px;
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+@media (max-width: 639px) {
+  .scenario-content { padding-left: 16px; }
+}
+
+/* ========== ACTIONS TABLE ========== */
+.actions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.actions-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.actions-table th {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+.actions-table td {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+.actions-table tr:last-child td {
+  border-bottom: none;
+}
+.actions-table tr:hover td {
+  background: var(--card);
+}
+.priority-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.priority-badge.high {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--red);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+.priority-badge.medium {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.priority-badge.low {
+  background: rgba(107, 114, 128, 0.12);
+  color: var(--grey);
+  border: 1px solid rgba(107, 114, 128, 0.25);
+}
+.action-holding {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* ========== TIMELINE ========== */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 20px;
+}
+.timeline-item:last-child {
+  padding-bottom: 0;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -21px;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--bg);
+}
+.timeline-item.active::before {
+  background: var(--red);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+.timeline-date {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 2px;
+}
+.timeline-text {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  margin-top: 8px;
+}
+.footer-line {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+.footer-line .gold { color: var(--gold); }
+
+/* ========== NAV ========== */
+.nav {
+  display: flex;
+  gap: 4px;
+  padding: 16px 0 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+.nav-link:hover {
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: var(--card);
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a4a; }
+
+/* ========== MOBILE ACTIONS TABLE ========== */
+@media (max-width: 639px) {
+  .actions-table-wrapper { border: none; border-radius: 0; }
+  .actions-table thead { display: none; }
+  .actions-table, .actions-table tbody, .actions-table tr, .actions-table td {
+    display: block;
+    width: 100%;
+  }
+  .actions-table tr {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .actions-table td {
+    padding: 2px 0;
+    border-bottom: none;
+  }
+  .actions-table td::before {
+    content: attr(data-label);
+    font-family: var(--font-mono);
+    font-size: 0.5625rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .actions-table tr:hover td { background: transparent; }
+}
+
+/* ========== WEIGHT BAR ========== */
+.weight-bar-container {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.weight-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.weight-segment {
+  transition: width var(--transition);
+  min-width: 2px;
+}
+.weight-segment.green { background: var(--green); }
+.weight-segment.red { background: var(--red); }
+.weight-segment.amber { background: var(--amber); }
+.weight-segment.grey { background: var(--grey); }
+.weight-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 10px;
+}
+.weight-summary-item {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+.weight-summary-item span {
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header class="header">
+  <div class="container">
+    <div class="header-inner">
+      <div>
+        <div class="header-title">IRAN WAR PORTFOLIO MONITOR</div>
+        <div class="header-subtitle">Lost Decade V2 -- Conflict Impact Tracker</div>
+      </div>
+      <div class="header-meta">
+        <span class="header-date" id="header-time">Last Updated: 2026-03-09</span>
+        <span class="badge-conflict">CONFLICT ACTIVE</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#status" class="nav-link">STATUS</a>
+      <a href="#exposure" class="nav-link">EXPOSURE</a>
+      <a href="#sleeves" class="nav-link">SLEEVES</a>
+      <a href="#scenarios" class="nav-link">SCENARIOS</a>
+      <a href="#actions" class="nav-link">ACTIONS</a>
+      <a href="#timeline" class="nav-link">TIMELINE</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+<!-- ==================== SECTION 1: CONFLICT STATUS BAR ==================== -->
+<section class="section" id="status">
+  <div class="section-label">Section 01</div>
+  <div class="section-title">Conflict Status</div>
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-item-label">Strait of Hormuz</div>
+      <div><span class="status-badge red">CLOSED (NEAR-HALT)</span></div>
+    </div>
+    <div class="status-item">
+      <div class="status-item-label">Brent Crude</div>
+      <div class="status-item-value">$108.10</div>
+      <div class="status-item-change up">+16.63%</div>
+    </div>
+    <div class="status-item">
+      <div class="status-item-label">Gold (XAU)</div>
+      <div class="status-item-value">$5,037</div>
+      <div class="status-item-change down">-2.37%</div>
+    </div>
+    <div class="status-item">
+      <div class="status-item-label">Bitcoin</div>
+      <div class="status-item-value">$66,176</div>
+      <div class="status-item-change up">+0.31%</div>
+    </div>
+    <div class="status-item">
+      <div class="status-item-label">USD/THB</div>
+      <div class="status-item-value">32.11</div>
+      <div class="status-item-change up">+1.08% (baht weakening)</div>
+    </div>
+    <div class="status-item">
+      <div class="status-item-label">VIX</div>
+      <div><span class="status-badge red">STRESSED</span></div>
+      <div class="status-item-value">29.49</div>
+      <div class="status-item-change up">+24.17%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 2: PORTFOLIO EXPOSURE HEATMAP ==================== -->
+<section class="section" id="exposure">
+  <div class="section-label">Section 02</div>
+  <div class="section-title">Portfolio Exposure Heatmap</div>
+  
+  <div class="heatmap-legend">
+    <div class="legend-item"><div class="legend-dot green"></div>Benefiting</div>
+    <div class="legend-item"><div class="legend-dot red"></div>At Risk</div>
+    <div class="legend-item"><div class="legend-dot amber"></div>Mixed / Uncertain</div>
+    <div class="legend-item"><div class="legend-dot grey"></div>Insulated</div>
+  </div>
+
+  <!-- Aggregate weight bar -->
+  <div class="weight-bar-container">
+    <div class="weight-bar">
+      <div class="weight-segment green" style="width: 23.1%"></div>
+      <div class="weight-segment red" style="width: 33.5%"></div>
+      <div class="weight-segment amber" style="width: 7.3%"></div>
+      <div class="weight-segment grey" style="width: 36.1%"></div>
+    </div>
+    <div class="weight-summary">
+      <div class="weight-summary-item" style="color:var(--green)"><span>23.1%</span> Benefiting</div>
+      <div class="weight-summary-item" style="color:var(--red)"><span>33.5%</span> At Risk</div>
+      <div class="weight-summary-item" style="color:var(--amber)"><span>7.3%</span> Mixed</div>
+      <div class="weight-summary-item" style="color:var(--grey)"><span>36.1%</span> Insulated</div>
+    </div>
+  </div>
+
+  <div class="heatmap-grid" style="margin-top:16px;">
+
+    <!-- GREEN: Benefiting -->
+    <div class="heatmap-card impact-green">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Gold ETF</span>
+        <span class="heatmap-card-weight">16.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">GLD</div>
+      <div class="heatmap-card-assessment">Primary safe haven sleeve via GLD (ETF proxy). GLD gained +1.58% last session, but spot-gold has slipped today (-2.37%) even as Hormuz shipping remains near-halted. Hedge still working, but watch for profit-taking vs. liquidity-driven moves.</div>
+    </div>
+    <div class="heatmap-card impact-green">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">PTT PCL</span>
+        <span class="heatmap-card-weight">3.4%</span>
+      </div>
+      <div class="heatmap-card-ticker">PTT.BK</div>
+      <div class="heatmap-card-assessment">Short-term tailwind from higher crude, but domestic pricing interventions can cap upside. PTT last close 34.00 THB (flat).</div>
+    </div>
+    <div class="heatmap-card impact-green">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Commodity Basket</span>
+        <span class="heatmap-card-weight">2.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">GCC</div>
+      <div class="heatmap-card-assessment">Broad commodity basket supports inflation-hedge exposure, though risk-off tape can still pressure diversified commodity funds. GCC +1.71% last session.</div>
+    </div>
+    <div class="heatmap-card impact-green">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Energy Select</span>
+        <span class="heatmap-card-weight">1.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">XLE</div>
+      <div class="heatmap-card-assessment">Energy equities should benefit if crude stays bid; price action is responsive to oil (XLE +0.16%).</div>
+    </div>
+    <div class="heatmap-card impact-green">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Agriculture</span>
+        <span class="heatmap-card-weight">0.5%</span>
+      </div>
+      <div class="heatmap-card-ticker">DBA</div>
+      <div class="heatmap-card-assessment">Inflation pass-through theme intact; DBA slightly higher (+1.14%) last session.</div>
+    </div>
+    <div class="heatmap-card impact-green">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Silver Miners</span>
+        <span class="heatmap-card-weight">0.2%</span>
+      </div>
+      <div class="heatmap-card-ticker">SILJ</div>
+      <div class="heatmap-card-assessment">High beta precious-metals equity proxy; currently volatile (SILJ -1.16%), so treated as optional convexity rather than a stable hedge.</div>
+    </div>
+
+    <!-- RED: At Risk -->
+    <div class="heatmap-card impact-red">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">THB Fixed Deposit</span>
+        <span class="heatmap-card-weight">21.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">THB FD</div>
+      <div class="heatmap-card-assessment">Largest single exposure. USD/THB is weaker for THB at ~32.11, raising imported-energy inflation risk as Brent spikes above $100.</div>
+    </div>
+    <div class="heatmap-card impact-red">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">S-REITs</span>
+        <span class="heatmap-card-weight">8.5%</span>
+      </div>
+      <div class="heatmap-card-ticker">CLR.SI</div>
+      <div class="heatmap-card-assessment">Singapore REITs: vulnerable to risk-off, higher funding costs, and Asia risk premia. Monitor locally.</div>
+    </div>
+    <div class="heatmap-card impact-red">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Japan Dividend</span>
+        <span class="heatmap-card-weight">2.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">DXJ</div>
+      <div class="heatmap-card-assessment">Oil-importer sensitivity remains a headwind; DXJ fell -1.21% last session and remains vulnerable if crude extends higher.</div>
+    </div>
+    <div class="heatmap-card impact-red">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">EM Dividend</span>
+        <span class="heatmap-card-weight">1.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">IEEM.L</div>
+      <div class="heatmap-card-assessment">Risk-off and USD strength remain a headwind; IEEM.L fell -0.79% last session and remains sensitive to volatility.</div>
+    </div>
+    <div class="heatmap-card impact-red">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Bitcoin</span>
+        <span class="heatmap-card-weight">1.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">BTCUSD</div>
+      <div class="heatmap-card-assessment">BTC is back in a risk-on bounce (+0.18% last reading) but still treated as a risk asset during volatility spikes rather than a reliable crisis hedge.</div>
+    </div>
+
+    <!-- AMBER: Mixed -->
+    <div class="heatmap-card impact-amber">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Vanguard High Yield</span>
+        <span class="heatmap-card-weight">3.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">VHYL.L</div>
+      <div class="heatmap-card-assessment">Global dividend stream provides income buffer, but equity selloff risk if conflict extends.</div>
+    </div>
+    <div class="heatmap-card impact-amber">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Schwab US Dividend</span>
+        <span class="heatmap-card-weight">2.3%</span>
+      </div>
+      <div class="heatmap-card-ticker">SCHD</div>
+      <div class="heatmap-card-assessment">US dividend equities mixed: energy names benefit but consumer/industrial names face margin pressure.</div>
+    </div>
+    <div class="heatmap-card impact-amber">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Infrastructure</span>
+        <span class="heatmap-card-weight">2.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">INFR.L</div>
+      <div class="heatmap-card-assessment">Infrastructure benefits from oil/energy capex but Gulf-region exposure creates downside risk.</div>
+    </div>
+
+    <!-- GREY: Insulated -->
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">KKP Mandates</span>
+        <span class="heatmap-card-weight">11.4%</span>
+      </div>
+      <div class="heatmap-card-ticker">KKP Mandates</div>
+      <div class="heatmap-card-assessment">Locally managed Thai mandates. Insulated from direct conflict impact, domestic focus.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">SGD Fixed Deposit</span>
+        <span class="heatmap-card-weight">6.5%</span>
+      </div>
+      <div class="heatmap-card-ticker">SGD FD</div>
+      <div class="heatmap-card-assessment">Singapore dollar relatively resilient as MAS manages currency stability. Safer than THB position.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">KKP-PLUS Fund</span>
+        <span class="heatmap-card-weight">5.3%</span>
+      </div>
+      <div class="heatmap-card-ticker">KKP-PLUS</div>
+      <div class="heatmap-card-assessment">Conservative Thai fixed income fund. Low duration, local focus provides insulation from global shock.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Global Div Value</span>
+        <span class="heatmap-card-weight">3.5%</span>
+      </div>
+      <div class="heatmap-card-ticker">QDVW</div>
+      <div class="heatmap-card-assessment">Diversified global value. Broad geographic spread limits single-region conflict exposure.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Private Equity</span>
+        <span class="heatmap-card-weight">3.3%</span>
+      </div>
+      <div class="heatmap-card-ticker">PE</div>
+      <div class="heatmap-card-assessment">Illiquid, not marked to market. No immediate impact from daily volatility.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">1DIV ETF</span>
+        <span class="heatmap-card-weight">3.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">1DIV</div>
+      <div class="heatmap-card-assessment">Thai dividend ETF. Local market insulated from direct Middle East exposure.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Vanguard Asia-Pac</span>
+        <span class="heatmap-card-weight">2.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">VAPX</div>
+      <div class="heatmap-card-assessment">Diversified Asia-Pacific ex-Japan. Some indirect risk from regional sentiment but broadly insulated.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">Thai Aviation</span>
+        <span class="heatmap-card-weight">1.1%</span>
+      </div>
+      <div class="heatmap-card-ticker">VAYU1</div>
+      <div class="heatmap-card-assessment">Small position. Thai aviation may face jet fuel cost pressure but position size limits impact.</div>
+    </div>
+    <div class="heatmap-card impact-grey">
+      <div class="heatmap-card-header">
+        <span class="heatmap-card-name">TIPS</span>
+        <span class="heatmap-card-weight">0.0%</span>
+      </div>
+      <div class="heatmap-card-ticker">TIP</div>
+      <div class="heatmap-card-assessment">Inflation-protected Treasuries. Near-zero allocation, negligible portfolio impact.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== SECTION 3: SLEEVE IMPACT ANALYSIS ==================== -->
+<section class="section" id="sleeves">
+  <div class="section-label">Section 03</div>
+  <div class="section-title">Sleeve Impact Analysis</div>
+  <div class="sleeve-grid">
+    <div class="sleeve-card">
+      <div class="sleeve-card-header">
+        <span class="sleeve-card-name">Commodity / Hard Assets</span>
+        <span class="sleeve-card-weight">24.9%</span>
+      </div>
+      <div class="sleeve-card-impact positive">NET POSITIVE</div>
+      <div class="sleeve-card-desc">Oil has surged (Brent ~108.1, +16.6% day) with Hormuz shipping near-halted. Gold (spot proxy) has pulled back (~5,037, -2.37% day), but GLD remains up on the last session. GCC/DBA continue to provide diversified inflation-hedge exposure.</div>
+    </div>
+    <div class="sleeve-card">
+      <div class="sleeve-card-header">
+        <span class="sleeve-card-name">Dividend / Income</span>
+        <span class="sleeve-card-weight">32.8%</span>
+      </div>
+      <div class="sleeve-card-impact mixed">MIXED</div>
+      <div class="sleeve-card-desc">S-REITs (CLR.SI 8.5%) at risk from regional contagion and risk-off selling. KKP mandates (11.4%) insulated domestically. SCHD and VHYL.L face sector-level crosscurrents as volatility rises.</div>
+    </div>
+    <div class="sleeve-card">
+      <div class="sleeve-card-header">
+        <span class="sleeve-card-name">Global Value / EM</span>
+        <span class="sleeve-card-weight">5.0%</span>
+      </div>
+      <div class="sleeve-card-impact negative">NEGATIVE</div>
+      <div class="sleeve-card-desc">Japan (DXJ) imports nearly all oil -- crude spike directly compresses margins. EM (IEEM.L) faces capital flight to USD and developed-market safe havens.</div>
+    </div>
+    <div class="sleeve-card">
+      <div class="sleeve-card-header">
+        <span class="sleeve-card-name">Safe Assets</span>
+        <span class="sleeve-card-weight">32.8%</span>
+      </div>
+      <div class="sleeve-card-impact at-risk">AT RISK</div>
+      <div class="sleeve-card-desc">THB FD (21%) is the largest single position and most exposed to baht weakness and imported inflation. USD/THB is higher (~32.11), consistent with energy-price stress. SGD FD (6.5%) relatively safer as MAS manages currency stability. KKP-PLUS (5.3%) insulated via short duration.</div>
+    </div>
+    <div class="sleeve-card">
+      <div class="sleeve-card-header">
+        <span class="sleeve-card-name">Alt Hedges</span>
+        <span class="sleeve-card-weight">1.2%</span>
+      </div>
+      <div class="sleeve-card-impact mixed">MIXED</div>
+      <div class="sleeve-card-desc">Silver/SILJ remains high beta (-1.16% last session). BTC is modestly higher (+0.18%) but continues to behave like a risk asset during equity stress. Net impact remains small given the sleeve size.</div>
+    </div>
+    <div class="sleeve-card">
+      <div class="sleeve-card-header">
+        <span class="sleeve-card-name">Private Equity</span>
+        <span class="sleeve-card-weight">3.3%</span>
+      </div>
+      <div class="sleeve-card-impact insulated">INSULATED</div>
+      <div class="sleeve-card-desc">Illiquid holdings not marked to market. No immediate price impact from daily volatility. Underlying value may shift over quarters, not days.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SECTION 4: KEY RISK SCENARIOS ==================== -->
+<section class="section" id="scenarios">
+  <div class="section-label">Section 04</div>
+  <div class="section-title">Key Risk Scenarios</div>
+  <div class="scenario-list">
+
+    <div class="scenario-card">
+      <div class="scenario-header" onclick="toggleScenario(this)">
+        <div class="scenario-header-left">
+          <span class="scenario-number">01</span>
+          <span class="scenario-title">Quick Resolution (1-2 weeks)</span>
+        </div>
+        <span class="scenario-prob">30%</span>
+        <svg class="scenario-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-content">
+          <p><strong style="color:var(--text-primary)">Portfolio Impact: Minimal, +2-3%</strong></p>
+          <p style="margin-top:8px">Conflict de-escalates rapidly via diplomatic channels or decisive military outcome. Oil and gold spike then mean-revert within weeks. GLD captures temporary upside before settling. THB FD sees brief pressure but recovers. Net portfolio impact is a modest positive from commodity sleeve gains. No action required beyond monitoring.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card open">
+      <div class="scenario-header" onclick="toggleScenario(this)">
+        <div class="scenario-header-left">
+          <span class="scenario-number">02</span>
+          <span class="scenario-title">Prolonged Hormuz Closure (1-3 months)</span>
+        </div>
+        <span class="scenario-prob">40%</span>
+        <svg class="scenario-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-content">
+          <p><strong style="color:var(--text-primary)">Portfolio Impact: Significant, mixed across sleeves</strong></p>
+          <p style="margin-top:8px">Oil pushes to $100-120/bbl. Gold to $5,500+. THB weakens 5-10% on import costs. DXJ falls ~15% as Japan's energy bill balloons. GLD gains 10-15%. XLE and GCC surge. CLR.SI faces 5-10% drawdown from risk-off flows. This is the base case scenario requiring active management of THB FD exposure and potential rebalancing toward commodity winners.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card">
+      <div class="scenario-header" onclick="toggleScenario(this)">
+        <div class="scenario-header-left">
+          <span class="scenario-number">03</span>
+          <span class="scenario-title">Wider Regional War (3+ months)</span>
+        </div>
+        <span class="scenario-prob">20%</span>
+        <svg class="scenario-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-content">
+          <p><strong style="color:var(--text-primary)">Portfolio Impact: Severe, commodity hedge critical</strong></p>
+          <p style="margin-top:8px">Oil $120-150. Global recession risk rises sharply. THB FD real value erodes significantly under sustained imported inflation and currency weakness. DXJ and IEEM.L face deep drawdowns. However, Commodity/Hard Assets sleeve (24.9%) outperforms massively -- GLD, XLE, GCC all surge. Net portfolio is buffered but requires active THB management and potential rotation from dividend income to commodity exposure.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario-card">
+      <div class="scenario-header" onclick="toggleScenario(this)">
+        <div class="scenario-header-left">
+          <span class="scenario-number">04</span>
+          <span class="scenario-title">Nuclear Escalation</span>
+        </div>
+        <span class="scenario-prob">10%</span>
+        <svg class="scenario-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4"/></svg>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-content">
+          <p><strong style="color:var(--text-primary)">Portfolio Impact: Catastrophic for risk assets, gold surges</strong></p>
+          <p style="margin-top:8px">All risk assets crash globally. Gold surges past $6,000. Massive USD flight -- THB depreciates 15-20%+. BTC unpredictable but likely crashes alongside risk assets. Only gold (16%) and commodity holdings provide meaningful protection. Portfolio would need immediate defensive restructuring: maximize USD/SGD cash, exit THB FD, increase gold. This is the tail risk the commodity sleeve was built for.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== SECTION 5: RECOMMENDED ACTIONS ==================== -->
+<section class="section" id="actions">
+  <div class="section-label">Section 05</div>
+  <div class="section-title">Recommended Actions</div>
+  <div class="actions-table-wrapper">
+    <table class="actions-table">
+      <thead>
+        <tr>
+          <th style="width:80px">Priority</th>
+          <th style="width:120px">Holding</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Priority"><span class="priority-badge high">HIGH</span></td>
+          <td data-label="Holding"><span class="action-holding">THB FD (21%)</span></td>
+          <td data-label="Action">Monitor THB/USD rate closely. If THB weakens beyond 5% from pre-conflict levels, consider partial conversion to USD or SGD fixed deposits to preserve purchasing power. Largest single-position risk.</td>
+        </tr>
+        <tr>
+          <td data-label="Priority"><span class="priority-badge high">HIGH</span></td>
+          <td data-label="Holding"><span class="action-holding">XLE / GCC / Brent</span></td>
+          <td data-label="Action">Brent has cleared $100 (now ~108). XLE and GCC should benefit, while Japan exposure (DXJ) remains vulnerable to an energy shock. Consider trimming DXJ if oil remains >$100 for multiple sessions.</td>
+        </tr>
+        <tr>
+          <td data-label="Priority"><span class="priority-badge medium">MEDIUM</span></td>
+          <td data-label="Holding"><span class="action-holding">GLD (16%)</span></td>
+          <td data-label="Action">Gold is your best hedge and performing as designed. No action needed -- let it work. Consider taking partial profits only if gold exceeds $5,800 and conflict shows signs of resolution.</td>
+        </tr>
+        <tr>
+          <td data-label="Priority"><span class="priority-badge medium">MEDIUM</span></td>
+          <td data-label="Holding"><span class="action-holding">CLR.SI (8.5%)</span></td>
+          <td data-label="Action">Singapore REITs may face selling pressure if conflict spreads regionally or risk-off sentiment deepens. Monitor DPU sustainability and set alert for -10% drawdown.</td>
+        </tr>
+        <tr>
+          <td data-label="Priority"><span class="priority-badge low">LOW</span></td>
+          <td data-label="Holding"><span class="action-holding">SILJ (0.2%)</span></td>
+          <td data-label="Action">Consider adding to SILJ if silver breaks $100 -- amplified precious metals play with leveraged upside to safe haven demand.</td>
+        </tr>
+        <tr>
+          <td data-label="Priority"><span class="priority-badge low">LOW</span></td>
+          <td data-label="Holding"><span class="action-holding">BTC (1%)</span></td>
+          <td data-label="Action">Hold through volatility. Small 1% allocation is manageable risk. Do not add in risk-off environment. Reassess if conflict resolves and risk appetite returns.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==================== SECTION 6: TIMELINE ==================== -->
+<section class="section" id="timeline">
+  <div class="section-label">Section 06</div>
+  <div class="section-title">Timeline of Key Events</div>
+  <div class="timeline">
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 9, 2026</div>
+      <div class="timeline-text">Brent surges above $100 (to ~108) as tanker traffic through Hormuz remains near-halted; USD/THB weakens to ~32.11 amid imported-energy inflation risk. Thailand signals continued diesel-price caps via the Oil Fuel Fund while markets remain volatile.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 8, 2026</div>
+      <div class="timeline-text">Reuters reports Hormuz tanker traffic has ground to a near-halt (daily tankers dropped to zero as of mid-week) and the U.S. may begin escorting tankers if needed. Brent spikes to ~$108 (+16.6% day) while USD/THB weakens to ~32.11; VIX remains stressed near ~29.5.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 6, 2026</div>
+      <div class="timeline-text">Brent extends gains (around $84) as Hormuz disruption persists; Thailand extends a nationwide diesel cap (29.94 baht/litre) using the Oil Fuel Fund; BTC pulls back to ~$71k while VIX remains elevated near ~21.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 5, 2026</div>
+      <div class="timeline-text">Markets price a still-disrupted Strait of Hormuz: Reuters notes crude export flows sharply reduced versus normal levels; BTC rebounds above $72k while VIX eases back near 21.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 3, 2026</div>
+      <div class="timeline-text">Iranian officials state the Strait of Hormuz is closed and threaten to attack vessels attempting transit; market volatility remains elevated.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Feb 28, 2026</div>
+      <div class="timeline-text">Iran retaliates with missile strikes across Gulf states -- UAE, Kuwait, Saudi Arabia, and Bahrain targeted.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Mar 1, 2026</div>
+      <div class="timeline-text">Iran's Revolutionary Guard leadership and Defense Minister killed in further precision strikes.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Mar 1, 2026</div>
+      <div class="timeline-text">Strait of Hormuz effectively closed to commercial shipping. Insurance rates for Gulf transit surge.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Mar 1, 2026</div>
+      <div class="timeline-text">OPEC+ agrees to modest 206k bpd production increase -- insufficient to offset Hormuz disruption.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 3, 2026</div>
+      <div class="timeline-text">Brent crude trades around $82 with ongoing supply-risk pricing; VIX rises into the low-20s as risk sentiment deteriorates.</div>
+    </div>
+    <div class="timeline-item active">
+      <div class="timeline-date">Mar 3, 2026</div>
+      <div class="timeline-text">Thailand Energy Ministry outlines contingency planning and confirms ~61 days of oil reserves (including in-transit volumes); Mar 4 flagged as a key pump-price risk date.</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-line">Portfolio Total: <span class="gold">~92.82M THB</span> | Inception: Sep 2, 2025</div>
+    <div class="footer-line">Data sources: Reuters, NPR, Economic Times, ACLED, Cboe, Trading Economics, Yahoo Finance, Perplexity Finance, Nation Thailand, SET, Xe</div>
+    <div class="footer-line">This dashboard auto-updates via scheduled monitoring. Not financial advice. Last refreshed: 2026-03-09</div>
+  </div>
+</footer>
+
+<script>
+// ==================== SCENARIO TOGGLE ====================
+function toggleScenario(header) {
+  const card = header.closest('.scenario-card');
+  card.classList.toggle('open');
+}
+
+// ==================== HEADER CLOCK ====================
+function updateClock() {
+  const now = new Date();
+  const opts = { 
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit',
+    hour12: false, timeZone: 'Asia/Bangkok'
+  };
+  const formatted = now.toLocaleString('en-GB', opts);
+  document.getElementById('header-time').textContent = 'Last Updated: ' + formatted + ' ICT';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ==================== SMOOTH SCROLL FOR NAV ====================
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      const headerHeight = document.querySelector('.header').offsetHeight;
+      const targetPos = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 16;
+      window.scrollTo({ top: targetPos, behavior: 'smooth' });
+    }
+  });
+});
+
+// ==================== SCROLL REVEAL ====================
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.section').forEach(section => {
+  section.style.opacity = '0';
+  section.style.transition = 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+  observer.observe(section);
+});
+</script>
+
+</body>
+</html>
